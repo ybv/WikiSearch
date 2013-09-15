@@ -3,6 +3,9 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.wikipedia;
 
+import java.text.ParseException;
+import java.util.Collection;
+
 /**
  * @author nikhillo
  * This class implements Wikipedia markup processing.
@@ -17,9 +20,21 @@ public class WikipediaParser {
 	 * Refer: http://en.wikipedia.org/wiki/Help:Wiki_markup#Sections
 	 * @param titleStr: The string to be parsed
 	 * @return The parsed string with the markup removed
+	 * @throws ParseException 
 	 */
-	public static String parseSectionTitle(String titleStr) {
-		return titleStr;
+	public static WikipediaDocument wdp;
+	String str_to_format;
+	
+	
+	public WikipediaParser(int thisID, String thisdate,
+			String thisAuthor, String thisTitle) throws ParseException {
+		wdp = new WikipediaDocument(thisID,thisdate,thisAuthor,thisTitle);
+
+	}
+
+	public static String parseSectionTitle(String titleStr)  {
+		
+		return null;
 	}
 	
 	/* TODO */
@@ -30,7 +45,8 @@ public class WikipediaParser {
 	 * @return The parsed string with markup removed
 	 */
 	public static String parseListItem(String itemText) {
-		return null;
+		System.out.println(itemText);
+		return itemText;
 	}
 	
 	/* TODO */
