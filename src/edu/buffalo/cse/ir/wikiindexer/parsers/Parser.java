@@ -33,6 +33,7 @@ public class Parser extends DefaultHandler{
 
 	Collection<WikipediaDocument> documents=new ArrayList<WikipediaDocument>();
 	WikipediaParser WP;
+	WikipediaDocument WD;
 	ArrayList<String> textstr = new ArrayList<String>();
 	String thisXMLTag;
 	String thisXMLText;
@@ -89,16 +90,16 @@ public class Parser extends DefaultHandler{
 
 	public void characters (char[] buffer, int start, int length ){
 
-		thisXMLText = String.copyValueOf(buffer, start, length).trim();
-		//System.out.println(thisXMLText);
-
+		thisXMLText = String.valueOf(buffer, start, length).trim();
+		
 		if(thisXMLTag.equalsIgnoreCase("text")){
 			//System.out.println("text goes on");
-			//System.out.println(thisXMLText);
-			if(!thisXMLText.equals("")){
+			System.out.println(thisXMLText);
+				
 				onlytext.append(thisXMLText);
-			}
-
+				
+			
+				
 		}
 
 	}
@@ -119,11 +120,10 @@ public class Parser extends DefaultHandler{
 			try {
 				System.out.println("end element here ------------------------------ "+qName);
 				//System.out.println(onlytext.toString());
-				WikipediaParser WP = new WikipediaParser(thisID,thisdate,thisAuthor,thisTitle);
-				String str= WP.parseListItem(onlytext.toString());
+				 WD = getDocObject(onlytext);
 				//System.out.println(str);
 				textstr.add(onlytext.toString());
-			
+
 				//System.out.println("OBJECT WORKED ----- "+ WD.getAuthor());
 
 			} catch (NumberFormatException e) {
@@ -160,6 +160,18 @@ public class Parser extends DefaultHandler{
 
 	}
 
+
+	public WikipediaDocument getDocObject(StringBuffer onlytext2) throws ParseException{
+
+		WikipediaParser WP = new WikipediaParser(thisID,thisdate,thisAuthor,thisTitle);
+		String str= WP.parseSectionTitle(onlytext2.toString());
+		WikipediaDocument wdp = WP.getWikiObject();
+		
+		return wdp;
+
+
+	}
+	
 	/**
 	 * Method to add the given document to the collection.
 	 * PLEASE USE THIS METHOD TO POPULATE THE COLLECTION AS YOU PARSE DOCUMENTS
@@ -167,6 +179,7 @@ public class Parser extends DefaultHandler{
 	 * you have completely populated it, i.e., parsing is complete for that document.
 	 * @param doc: The WikipediaDocument to be added
 	 * @param documents: The collection of WikipediaDocuments to be added to
+	 * @throws ParseException 
 	 */
 
 

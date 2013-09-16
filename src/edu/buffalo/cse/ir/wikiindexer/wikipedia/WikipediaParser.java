@@ -5,6 +5,8 @@ package edu.buffalo.cse.ir.wikiindexer.wikipedia;
 
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author nikhillo
@@ -14,14 +16,6 @@ import java.util.Collection;
  * All methods are static as the class is not expected to maintain any state.
  */
 public class WikipediaParser {
-	/* TODO */
-	/**
-	 * Method to parse section titles or headings.
-	 * Refer: http://en.wikipedia.org/wiki/Help:Wiki_markup#Sections
-	 * @param titleStr: The string to be parsed
-	 * @return The parsed string with the markup removed
-	 * @throws ParseException 
-	 */
 	public static WikipediaDocument wdp;
 	String str_to_format;
 	
@@ -31,10 +25,36 @@ public class WikipediaParser {
 		wdp = new WikipediaDocument(thisID,thisdate,thisAuthor,thisTitle);
 
 	}
+	
+	/* TODO */
+	/**
+	 * Method to parse section titles or headings.
+	 * Refer: http://en.wikipedia.org/wiki/Help:Wiki_markup#Sections
+	 * @param titleStr: The string to be parsed
+	 * @return The parsed string with the markup removed
+	 * @throws ParseException 
+	 */
+	
 
 	public static String parseSectionTitle(String titleStr)  {
-		
-		return null;
+		 String line = titleStr;
+	    
+
+	      // Create a Pattern object
+	      Pattern r = Pattern.compile("\\=\\=(.*)\\=\\=");
+
+	      // Now create matcher object.
+	      System.out.println(line);
+	      Matcher m = r.matcher(line);
+	      if (m.find( )) {
+	         System.out.println("Found value: " + m.groupCount() );
+	         String [] temp = m.group(1).split("\\|");
+	         for ( String s :temp)
+	        	 	System.out.println(s.toString());
+	      } else {
+	         System.out.println("NO MATCH");
+	      }
+		return line;
 	}
 	
 	/* TODO */
@@ -46,6 +66,7 @@ public class WikipediaParser {
 	 */
 	public static String parseListItem(String itemText) {
 		System.out.println(itemText);
+		
 		return itemText;
 	}
 	
@@ -95,6 +116,14 @@ public class WikipediaParser {
 	public static String[] parseLinks(String text) {
 		return null;
 	}
+
+
+	public WikipediaDocument getWikiObject() {
+		// TODO Auto-generated method stub
+		return wdp;
+	}
+
+
 	
 	
 	
