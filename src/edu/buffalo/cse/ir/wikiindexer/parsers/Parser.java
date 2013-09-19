@@ -4,13 +4,16 @@
 package edu.buffalo.cse.ir.wikiindexer.parsers;
 
 import java.awt.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -41,7 +44,7 @@ public class Parser extends DefaultHandler{
 	String thisAuthor;
 	int thisID;
 	String thisTitle;
-	StringBuffer onlytext = new StringBuffer();
+	StringBuilder onlytext;
 	String textval;
 
 	/**
@@ -49,6 +52,7 @@ public class Parser extends DefaultHandler{
 	 * @param idxConfig
 	 * @param parser
 	 */
+
 	public Parser(Properties idxProps) {
 		props = idxProps;
 	}
@@ -61,6 +65,7 @@ public class Parser extends DefaultHandler{
 	 */
 	public void parse(String filename, Collection<WikipediaDocument> docs) {
 		documents=docs;
+
 		//System.out.println(docs.toString());
 		SAXParserFactory sp = SAXParserFactory.newInstance();
 		SAXParser sparser= null;
@@ -91,26 +96,24 @@ public class Parser extends DefaultHandler{
 	public void characters (char[] buffer, int start, int length ){
 
 		thisXMLText = String.valueOf(buffer, start, length).trim();
-		
+
 		if(thisXMLTag.equalsIgnoreCase("text")){
 			//System.out.println("text goes on");
-			System.out.println(thisXMLText);
-				
-				onlytext.append(thisXMLText);
-				
-			
-				
+			//System.out.println(thisXMLText);
+			/*if(thisXMLText.equals("")){
+				onlytext.append("\n");
+			}*/
+			onlytext.append(buffer,start,length);
 		}
-
 	}
 
 	public void startElement( String uri, String localName, String qName, Attributes attributes) {
-
 		thisXMLTag=qName;
-		if(thisXMLTag.equalsIgnoreCase("page")){
-			onlytext.delete(0, onlytext.length());
-			System.out.println("start element here ------------------------------ "+thisXMLTag);
 
+		if(thisXMLTag.equalsIgnoreCase("page")){
+			onlytext= new StringBuilder("");
+			onlytext.delete(0, onlytext.length());
+			System.out.println("start element here --------------------------- "+thisXMLTag);
 		}
 	}
 
@@ -120,7 +123,7 @@ public class Parser extends DefaultHandler{
 			try {
 				System.out.println("end element here ------------------------------ "+qName);
 				//System.out.println(onlytext.toString());
-				 WD = getDocObject(onlytext);
+				WD = getDocObject(onlytext);
 				//System.out.println(str);
 				textstr.add(onlytext.toString());
 
@@ -130,6 +133,9 @@ public class Parser extends DefaultHandler{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -161,17 +167,26 @@ public class Parser extends DefaultHandler{
 	}
 
 
-	public WikipediaDocument getDocObject(StringBuffer onlytext2) throws ParseException{
+	public WikipediaDocument getDocObject(StringBuilder onlytext2) throws ParseException, IOException{
 
 		WikipediaParser WP = new WikipediaParser(thisID,thisdate,thisAuthor,thisTitle);
-		String str= WP.parseSectionTitle(onlytext2.toString());
+		String sectiontextstr= WP.parseSectionTitle(onlytext2.toString());
+		System.out.println(sectiontextstr+ " ----------------------- section text parsed");
+		if(!sectiontextstr.equals("snf"))
+		{ 
+			String afterlisttext= WP.parseListItem(sectiontextstr);
+			System.out.println(afterlisttext+"------------------------- list items parsed");
+			String aftertextformat = WP.parseTextFormatting(sectiontextstr);
+			System.out.println(aftertextformat+"-------------------------- after text formatting");
+		}
+		
 		WikipediaDocument wdp = WP.getWikiObject();
 		
 		return wdp;
 
-
+		
 	}
-	
+
 	/**
 	 * Method to add the given document to the collection.
 	 * PLEASE USE THIS METHOD TO POPULATE THE COLLECTION AS YOU PARSE DOCUMENTS
