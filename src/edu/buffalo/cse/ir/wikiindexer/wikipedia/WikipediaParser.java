@@ -6,6 +6,8 @@ package edu.buffalo.cse.ir.wikiindexer.wikipedia;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,21 +22,24 @@ import java.util.regex.Pattern;
 public class WikipediaParser {
 	public static WikipediaDocument wdp;
 	String str_to_format;
+	static final Pattern titlePattern = Pattern.compile("(((^\\=\\=)(.*?)(\\=\\=$)(\n)*(.+\\s*)[^\\=\\=$]))",Pattern.MULTILINE);
 	static final Pattern secTitlePattern = Pattern.compile("(((^\\=\\=)(.+)(\\=\\=$)(\n)(.+\\s*)[^\\=\\=$]*))",Pattern.MULTILINE);
 	static final Pattern linkPattern = Pattern.compile("\\[\\[(.*?)\\]\\]");
 	static final Pattern boldPattern= Pattern.compile("(\\'\\'\\')(.*?)(\\'\\'\\')");
-	static final Pattern italicPattern= Pattern.compile("(\\'\\')([^\'].*?)(\\'\\')");
+	static final Pattern italicPattern= Pattern.compile("(\\'\\')(.*?)(\\'\\')");
 	static final Pattern bolditalicPattern= Pattern.compile("(\\'\\'\\'\\'\\')(.*?)(\\'\\'\\'\\'\\')");
-	static final Pattern tagFormatPattern = Pattern.compile("");
-	static final Pattern listItemPattern = Pattern.compile("((\\*+) (.+))");
+	static final Pattern liststarItemPattern = Pattern.compile("((\\*+) (.+))");
+	static final Pattern listhashItemPattern = Pattern.compile("((\\#+) (.+))");
+	static final Pattern defItemPattern = Pattern.compile("((\\:+) (.+))");
 	static final Pattern templatePattern = Pattern.compile("(\\{\\{)(.*?)(\\}\\})");
 	static String secTitle ="";
+	
+	static final Map<String, String> titleandtext = new HashMap<String, String>();
 	public WikipediaParser(int thisID, String thisdate,
 			String thisAuthor, String thisTitle) throws ParseException {
 		wdp = new WikipediaDocument(thisID,thisdate,thisAuthor,thisTitle);
 
 	}
-
 	/* TODO */
 	/**
 	 * Method to parse section titles or headings.
@@ -44,40 +49,37 @@ public class WikipediaParser {
 	 * @throws ParseException 
 	 */
 
-
 	public static String parseSectionTitle(String titleStr)  {
-
+	
 		String secText ="";
-		//change
-		String text ="";
-		text = titleStr.replaceAll("&gt;", ">");
-		text = text.replaceAll("&lt;", "<");
-		text = text.replaceAll("<ref>.*?</ref>", " ");
-		text = text.replaceAll("\\{\\{cit.*?\\}\\}"," ");
-		text = text.replaceAll("</?.*?>", " ");
-		Matcher m = secTitlePattern.matcher(text);
-		String[] all_sections;
-		int count=0;
-		while(m.find()) {
-			count +=1;
-			secText = m.group(1);
-			all_sections = secText.trim().split("\\=\\=");
-			secTitle=all_sections[1].replaceAll("\\=", " ");
-			System.out.println(secTitle+ " is the section title");
-			//System.out.println("---------------------");
-			//System.out.println(" and the section text is " + secText);
-			//wdp.addSection(secTitle, secText);
-			//return temp;
-			WikipediaParser.parseListItem(secText);
-
-		} 
-
-		System.out.println("removed all section mark up and number of sections = " +count);
-
-
-
-
-		return "snf";
+		
+		System.out.println(titleStr.trim());
+		if(titleStr!=null){
+			String[] parts = titleStr.split("\\==+");
+			for(int i=1;i<parts.length;i+=2){
+				if(parts[i].trim().equals("")){
+					titleandtext.put("Default", parts[i+1]);
+					System.out.println(parts[i]);
+				}
+				try{
+				titleandtext.put(parts[i], parts[i+1]);
+				}catch(IndexOutOfBoundsException e){
+					titleandtext.put(parts[i], "");
+				}
+				}
+			for (Map.Entry entry : titleandtext.entrySet()) {
+				secTitle =entry.getKey().toString().trim();
+				secText= entry.getValue().toString();
+				//System.out.println("section text being sent is"+ secText);
+				//WikipediaParser.parseListItem(secText);
+			}
+			System.out.println("comes here");
+		}
+		if(!secTitle.equals("")){
+			System.out.println("the section title is " +secTitle);
+			return secTitle;
+		}
+		return titleStr;
 	}
 
 	/* TODO */
@@ -88,22 +90,56 @@ public class WikipediaParser {
 	 * @return The parsed string with markup removed
 	 */
 	public static String parseListItem(String itemText) {
-		Matcher m = listItemPattern.matcher(itemText);
-		String temp ="";
-		int count=0;
-		while(m.find()) {
-			count +=1;
-			temp = m.group(3);
-			temp = temp.replaceAll("\\'+", "");
-			temp = temp.replaceAll("\"+", "");
-			temp = temp.replaceAll("\\[\\[(.*?)\\]\\]", "$1");
-			System.out.println(temp);
-			return temp;
-		} 
-		System.out.println("------------ removed all list item mark up and number of list items = " +count);
+		String listtemp ="";
+		System.out.println(secTitle+"   is the section title and the text that is being parsed at item level is ");
+		System.out.println(itemText);
+		if(itemText!=null){
+			Matcher m = liststarItemPattern.matcher(itemText);
+			Matcher m2 = listhashItemPattern.matcher(itemText);
+			Matcher m3 = defItemPattern.matcher(itemText);
+			int count=0;
+			while(m.find()) {
+				count +=1;
+				listtemp+= m.group(3);
+				listtemp = listtemp.replaceAll("\\'+", "");
+				listtemp = listtemp.replaceAll("\"+", "");
+				listtemp = listtemp.replaceAll("\\[\\[(.*?)\\]\\]", "$1");
+				//System.out.println(temp);
 
-		WikipediaParser.parseTextFormatting(temp);
-		return "snf";
+			} 
+			while(m2.find()) {
+				count +=1;
+				listtemp+= m2.group(3);
+				listtemp = listtemp.replaceAll("\\'+", "");
+				listtemp = listtemp.replaceAll("\"+", "");
+				listtemp = listtemp.replaceAll("\\[\\[(.*?)\\]\\]", "$1");
+				//System.out.println(temp);
+
+			} 
+			while(m3.find()) {
+				count +=1;
+				listtemp+= m3.group(3);
+				listtemp = listtemp.replaceAll("\\'+", "");
+				listtemp = listtemp.replaceAll("\"+", "");
+				listtemp = listtemp.replaceAll("\\[\\[(.*?)\\]\\]", "$1");
+				//System.out.println(temp);
+
+			} 
+
+		}
+		//	System.out.println("------------ removed all list item mark up and number of list items = " +count);
+		System.out.println("------------------parsing list markup ---------------------------");
+		System.out.println(listtemp);
+		titleandtext.put(secTitle, listtemp);
+		System.out.println("-----------------finished parsing list markup---------------------");
+
+		
+		if(!listtemp.equals("")){
+			WikipediaParser.parseTextFormatting(listtemp);
+			return listtemp;
+		}
+		WikipediaParser.parseTextFormatting(itemText);
+		return itemText;
 
 	}
 
@@ -115,33 +151,46 @@ public class WikipediaParser {
 	 * @return The parsed text with the markup removed
 	 */
 	public static String parseTextFormatting(String text) {
-		Matcher m1 = boldPattern.matcher(text);
-		Matcher m2 = italicPattern.matcher(text);
-		Matcher m3 = bolditalicPattern.matcher(text);
-		String temp ="";
-		int count=0;
-		while(m1.find()) {
-			temp = m1.group(2);
-			//System.out.println(m1.groupCount());
-			System.out.println(temp.toString());
-			count++;
+		String textemp ="";
+		System.out.println(secTitle+"   is the section title and the text that is being parsed at format level is ");
+		System.out.println(text);
+		if(text!=null){
+			Matcher m1 = boldPattern.matcher(text);
+			Matcher m2 = italicPattern.matcher(text);
+			Matcher m3 = bolditalicPattern.matcher(text);
+			textemp=text;
+			int count=0;
+			while(m1.find()) {
+				textemp =textemp.replaceAll("(\\'\\'\\')(.*?)(\\'\\'\\')", "$2");
+				//System.out.println(m1.groupCount());
+				System.out.println(textemp.toString());
+				count++;
+			}
+			while(m2.find()) {
+				textemp =textemp.replaceAll("(\\'\\')(.*?)(\\'\\')","$2");
+				//System.out.println(m2.groupCount());
+				System.out.println(textemp.toString());
+				count++;
+			}
+			while(m3.find()) {
+				textemp = textemp.replaceAll("(\\'\\'\\'\\'\\')(.*?)(\\'\\'\\'\\'\\')", "$2");
+				//System.out.println(m2.groupCount());
+				System.out.println(textemp.toString());
+				count++;
+			}
+			
 		}
-		while(m2.find()) {
-			temp = m2.group(2);
-			//System.out.println(m2.groupCount());
-			System.out.println(temp.toString());
-			count++;
-		}
-		while(m3.find()) {
-			temp = m3.group(2);
-			//System.out.println(m2.groupCount());
-			System.out.println(temp.toString());
-			count++;
-		}
-
+		
+		System.out.println("------------------parsing text formatting markup ---------------------------");
+		System.out.println(textemp);
+		titleandtext.put(secTitle, textemp);
+		System.out.println("-----------------finished text formatting  markup---------------------");
 		//System.out.println("----------- removed all the bold and italics markup with count ="+count);
-		//WikipediaParser.parseTagFormatting(text);
-		return temp;
+		WikipediaParser.parseTagFormatting(textemp);
+		if(!textemp.equals("")){
+			return textemp;
+		}
+		return text;
 	}
 
 	/* TODO */
@@ -151,13 +200,23 @@ public class WikipediaParser {
 	 * @param text: The text to be parsed
 	 * @return The parsed text with the markup removed.
 	 */
-	/*	public static String parseTagFormatting(String text) {
-		WikipediaParser.parseTemplates(text);
-
-		WikipediaParser.parseLinks(text);
-		return null;
+	public static String parseTagFormatting(String text) {
+		if(text!=null){
+			text = text.replaceAll("&gt;", ">");
+			text = text.replaceAll("&lt;", "<");
+			text = text.replaceAll("<.*>(.*?)<.*>", "$1").trim();
+			text =text.replaceAll("<.*>", "");
+			System.out.println("------------------parsing tag markup ---------------------------");
+			System.out.println(text);
+			titleandtext.put(secTitle, text);
+			System.out.println("-----------------finished tag markup---------------------");
+			WikipediaParser.parseTemplates(text);
+			
+		}
+		
+		return text;
 	}
-	 */
+
 	/* TODO */
 	/**
 	 * Method to parse wikipedia templates. These are *any* {{xyz}} tags
@@ -165,27 +224,20 @@ public class WikipediaParser {
 	 * @param text: The text to be parsed
 	 * @return The parsed text with the markup removed
 	 */
-	/*	public static String parseTemplates(String text) {
-		Matcher m = templatePattern.matcher(text);
-		String temp ="";
-		String[] all_sections;
-		int count=0;
-		while(m.find()) {
-			count +=1;
-			temp = m.group(2);
-
-			System.out.println(temp);
-			//return temp;
-		} 
-		System.out.println("removed all template mark up and number of sections = " +count);
-
-
-
-
+	public static String parseTemplates(String text) {
+		if(text!=null){
+			text = text.replaceAll("\\{\\{(.*?)\\}\\}","$1");
+			System.out.println("------------- parsing templates now --------------------");
+			System.out.println(text);
+			titleandtext.put(secTitle, text);
+			System.out.println("---------------parsed templates--------------------------");
+			WikipediaParser.parseLinks(text);
+		}
+		
 		return null;
 	}
 
-	 */
+
 	/* TODO */
 	/**
 	 * Method to parse links and URLs.
@@ -195,22 +247,34 @@ public class WikipediaParser {
 	 *  The 0th element is the parsed text as visible to the user on the page
 	 *  The 1st element is the link url
 	 */
-	/*	public static String[] parseLinks(String text) {
-
+	public static String[] parseLinks(String text) {
+		String textemp ="";
+		System.out.println(secTitle+"   is the section title and the text that is being parsed at link level is ");
+		System.out.println(text);
 		Matcher m = linkPattern.matcher(text);
 		int count=0;
+		String [] temp = {"",""};	
 		while(m.find()) {
-			String [] temp = m.group(1).split("\\|");
+			temp = m.group(1).split("\\|");
 			System.out.println(temp[0].toString());
 			count++;
 		}
-		System.out.println("removed all the links markup with link count ="+count);
+		System.out.println("------------- parsing links now --------------------");
+		System.out.println(temp[0]);
+		System.out.println("---------------parsed links--------------------------");
 		return null;
 	}
 
-	 */
+
 	public WikipediaDocument getWikiObject() {
 		// TODO Auto-generated method stub
+		String Text="";
+		for (Map.Entry entry : titleandtext.entrySet()) {
+			secTitle =entry.getKey().toString().trim();
+			Text= entry.getValue().toString().trim();
+			//System.out.println(secTitle+ " is the section "); 
+			 //System.out.println(Text + "is the text");
+		}
 		return wdp;
 	}
 

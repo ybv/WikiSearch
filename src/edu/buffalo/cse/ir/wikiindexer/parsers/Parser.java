@@ -171,15 +171,7 @@ public class Parser extends DefaultHandler{
 
 		WikipediaParser WP = new WikipediaParser(thisID,thisdate,thisAuthor,thisTitle);
 		String sectiontextstr= WP.parseSectionTitle(onlytext2.toString());
-		System.out.println(sectiontextstr+ " ----------------------- section text parsed");
-		if(!sectiontextstr.equals("snf"))
-		{ 
-			String afterlisttext= WP.parseListItem(sectiontextstr);
-			System.out.println(afterlisttext+"------------------------- list items parsed");
-			String aftertextformat = WP.parseTextFormatting(sectiontextstr);
-			System.out.println(aftertextformat+"-------------------------- after text formatting");
-		}
-		
+		//System.out.println(sectiontextstr+ " ----------------------- section text parsed");
 		WikipediaDocument wdp = WP.getWikiObject();
 		
 		return wdp;
