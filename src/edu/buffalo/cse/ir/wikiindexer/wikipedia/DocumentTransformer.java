@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.Tokenizer;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
@@ -23,6 +24,7 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 	 * @param doc: The WikipediaDocument to be processed
 	 */
 	public DocumentTransformer(Map<INDEXFIELD, Tokenizer> tknizerMap, WikipediaDocument doc) {
+		System.out.println("this is called");
 		//TODO: Implement this method
 	}
 	
@@ -32,6 +34,14 @@ public class DocumentTransformer implements Callable<IndexableDocument> {
 	 */
 	public IndexableDocument call() throws TokenizerException {
 		// TODO Implement this method
+		/*WikipediaDocument doc;
+		doc.getAuthor();
+		doc.getTitle();
+		doc.getCategories();
+		doc.getLinks();
+		doc.getPublishDate();
+		doc.getSections();
+		//TokenStream ts = new TokenStream(null);*/
 		return null;
 	}
 	

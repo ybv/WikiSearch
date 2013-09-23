@@ -2,16 +2,20 @@
  * 
  */
 package edu.buffalo.cse.ir.wikiindexer.parsers;
-
+import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import java.awt.List;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +27,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
 
+import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.Tokenizer;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
+import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerFactory;
+import edu.buffalo.cse.ir.wikiindexer.wikipedia.DocumentTransformer;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaDocument;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaParser;
 
@@ -33,8 +42,8 @@ import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaParser;
 public class Parser extends DefaultHandler{
 	/* */
 	private final Properties props;
-
-	Collection<WikipediaDocument> documents=new ArrayList<WikipediaDocument>();
+	INDEXFIELD IND;
+	public Collection<WikipediaDocument> documents=new ConcurrentLinkedQueue<WikipediaDocument>();
 	WikipediaParser WP;
 	WikipediaDocument WD;
 	ArrayList<String> textstr = new ArrayList<String>();
@@ -64,8 +73,8 @@ public class Parser extends DefaultHandler{
 	 * @param docs
 	 */
 	public void parse(String filename, Collection<WikipediaDocument> docs) {
-		documents=docs;
-
+		documents= docs;
+		
 		//System.out.println(docs.toString());
 		SAXParserFactory sp = SAXParserFactory.newInstance();
 		SAXParser sparser= null;
@@ -81,6 +90,7 @@ public class Parser extends DefaultHandler{
 		}
 		Parser handler = new Parser(props);
 		//System.out.println("this happened");
+		
 		try {
 			sparser.parse(filename,handler);
 		} catch (SAXException e) {
@@ -90,7 +100,7 @@ public class Parser extends DefaultHandler{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 	}
 
 	public void characters (char[] buffer, int start, int length ){
@@ -124,11 +134,11 @@ public class Parser extends DefaultHandler{
 				System.out.println("end element here ------------------------------ "+qName);
 				//System.out.println(onlytext.toString());
 				WD = getDocObject(onlytext);
+				add(WD,documents);
+				System.out.println(documents.size());
 				//System.out.println(str);
 				textstr.add(onlytext.toString());
-
 				//System.out.println("OBJECT WORKED ----- "+ WD.getAuthor());
-
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -138,7 +148,7 @@ public class Parser extends DefaultHandler{
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			} 
 		}
 		else if(thisXMLTag.equals("id")){
 			if(!thisXMLText.equals(""))
@@ -173,6 +183,10 @@ public class Parser extends DefaultHandler{
 		String sectiontextstr= WP.parseSectionTitle(onlytext2.toString());
 		//System.out.println(sectiontextstr+ " ----------------------- section text parsed");
 		WikipediaDocument wdp = WP.getWikiObject();
+		System.out.println("here in parser -----------------");
+		//System.out.println(wdp.getAuthor());
+		//System.out.println(wdp.getTitle());
+		//System.out.println(wdp.getCategories());
 		
 		return wdp;
 
@@ -191,8 +205,9 @@ public class Parser extends DefaultHandler{
 
 
 	private synchronized void add(WikipediaDocument doc, Collection<WikipediaDocument> documents) {
+	
 		documents.add(doc);
-
+		
 	}
 
 }
