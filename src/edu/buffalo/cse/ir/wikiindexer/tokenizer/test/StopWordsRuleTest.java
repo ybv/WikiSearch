@@ -14,14 +14,10 @@ import org.junit.runners.Parameterized;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
-/**
- * @author nikhillo
- *
- */
 @RunWith(Parameterized.class)
 public class StopWordsRuleTest extends TokenizerRuleTest {
 
-	public StopWordsRuleTest(Properties props, String constantName) {
+	public StopWordsRuleTest(Properties props) {
 		super(props, IndexerConstants.STOPWORDSRULE);
 	}
 	

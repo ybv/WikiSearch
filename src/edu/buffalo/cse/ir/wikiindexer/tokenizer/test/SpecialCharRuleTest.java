@@ -14,14 +14,10 @@ import org.junit.runners.Parameterized;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
-/**
- * @author nikhillo
- *
- */
 @RunWith(Parameterized.class)
 public class SpecialCharRuleTest extends TokenizerRuleTest {
 
-	public SpecialCharRuleTest(Properties props, String constantName) {
+	public SpecialCharRuleTest(Properties props) {
 		super(props, IndexerConstants.SPECIALCHARRULE);
 	}
 	
@@ -47,11 +43,11 @@ public class SpecialCharRuleTest extends TokenizerRuleTest {
 							runtest("x^2 = x*x")); //crows feet, asterisk and equal to
 					assertArrayEquals(new Object[]{"proctor gamble"}, 
 							runtest("proctor & gamble")); //&
-					assertArrayEquals(new Object[]{"a b c"}, 
+					assertArrayEquals(new Object[]{"a b-c"}, 
 							runtest("a+b-c")); //+, -
 					assertArrayEquals(new Object[]{"case x continue"}, 
 							runtest("case x: continue;")); //: ;
-					assertArrayEquals(new Object[]{"stdin cut f1 sort myfile"}, 
+					assertArrayEquals(new Object[]{"stdin cut -f1 sort myfile"}, 
 							runtest("stdin < cut -f1 | sort > myfile")); //< > |
 					assertArrayEquals(new Object[]{"pray to"}, 
 							runtest("pray to __/\\__"));
@@ -71,11 +67,11 @@ public class SpecialCharRuleTest extends TokenizerRuleTest {
 							runtest("x^2","=","x*x")); //crows feet, asterisk and equal to
 					assertArrayEquals(new Object[]{"proctor","gamble"}, 
 							runtest("proctor","&","gamble")); //&
-					assertArrayEquals(new Object[]{"a","b","c"}, 
-							runtest("a+b-c")); //+, -
+					assertArrayEquals(new Object[]{"a","b","-","c"}, 
+							runtest("a","+","b","-","c")); //+, -
 					assertArrayEquals(new Object[]{"case","x","continue"}, 
 							runtest("case","x:","continue;")); //: ;
-					assertArrayEquals(new Object[]{"stdin","cut","f1","sort","myfile"}, 
+					assertArrayEquals(new Object[]{"stdin","cut","-f1","sort","myfile"}, 
 							runtest("stdin","<","cut","-f1","|", "sort", ">", "myfile")); //< > |
 					assertArrayEquals(new Object[]{"pray","to"}, 
 							runtest("pray","to","__/\\__"));

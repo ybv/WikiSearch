@@ -3,23 +3,35 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.indexer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-/**
- * @author nikhillo
- * An abstract class that represents a dictionary object for a given index
- */
+import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
+
 public abstract class Dictionary implements Writeable {
-	public Dictionary (Properties props, INDEXFIELD field) {
-		//TODO Implement this method
-	}
 	
+	INDEXFIELD haha;
+	int pnum ;
+	FileOutputStream fout;
+	boolean ter = false;
+	boolean link = false;
+	String output_file;
+	public Dictionary (Properties props, INDEXFIELD field) {
+		this.haha = field;
+		this.output_file  = props.getProperty(IndexerConstants.TEMP_DIR);
+	}
+
 	/* (non-Javadoc)
 	 * @see edu.buffalo.cse.ir.wikiindexer.indexer.Writeable#writeToDisk()
 	 */
 	public void writeToDisk() throws IndexerException {
-		// TODO Implement this method
+
 
 	}
 
@@ -30,7 +42,7 @@ public abstract class Dictionary implements Writeable {
 		// TODO Implement this method
 
 	}
-	
+
 	/**
 	 * Method to check if the given value exists in the dictionary or not
 	 * Unlike the subclassed lookup methods, it only checks if the value exists
@@ -39,10 +51,10 @@ public abstract class Dictionary implements Writeable {
 	 * @return true if found, false otherwise
 	 */
 	public boolean exists(String value) {
-		//TODO Implement this method
 		return false;
+		
 	}
-	
+
 	/**
 	 * MEthod to lookup a given string from the dictionary.
 	 * The query string can be an exact match or have wild cards (* and ?)
@@ -55,7 +67,7 @@ public abstract class Dictionary implements Writeable {
 		//TODO: Implement this method (FOR A BONUS)
 		return null;
 	}
-	
+
 	/**
 	 * Method to get the total number of terms in the dictionary
 	 * @return The size of the dictionary

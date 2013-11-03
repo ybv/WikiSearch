@@ -14,14 +14,10 @@ import org.junit.runners.Parameterized;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
-/**
- * @author nikhillo
- *
- */
 @RunWith(Parameterized.class)
 public class WhitespaceRuleTest extends TokenizerRuleTest {
 
-	public WhitespaceRuleTest(Properties props, String constantName) {
+	public WhitespaceRuleTest(Properties props) {
 		super(props, IndexerConstants.WHITESPACERULE);
 	}
 	

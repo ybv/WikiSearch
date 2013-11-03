@@ -14,14 +14,10 @@ import org.junit.runners.Parameterized;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
-/**
- * @author nikhillo
- * 
- */
 @RunWith(Parameterized.class)
 public class NumberRuleTest extends TokenizerRuleTest {
 
-	public NumberRuleTest(Properties props, String constantName) {
+	public NumberRuleTest(Properties props) {
 		super(props, IndexerConstants.NUMBERSRULE);
 	}
 

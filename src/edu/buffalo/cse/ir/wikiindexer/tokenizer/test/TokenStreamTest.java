@@ -15,10 +15,6 @@ import org.junit.Test;
 
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 
-/**
- * @author nikhillo
- *
- */
 public class TokenStreamTest {
 
 	/**

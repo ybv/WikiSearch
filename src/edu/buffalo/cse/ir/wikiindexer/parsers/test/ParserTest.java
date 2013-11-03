@@ -18,10 +18,7 @@ import edu.buffalo.cse.ir.wikiindexer.parsers.Parser;
 import edu.buffalo.cse.ir.wikiindexer.test.PropertiesBasedTest;
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaDocument;
 
-/**
- * @author nikhillo
- *
- */
+
 @RunWith(Parameterized.class)
 public class ParserTest extends PropertiesBasedTest {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");

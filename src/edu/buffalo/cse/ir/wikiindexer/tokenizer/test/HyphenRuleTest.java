@@ -14,14 +14,11 @@ import org.junit.runners.Parameterized;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
-/**
- * @author nikhillo
- *
- */
+
 @RunWith(Parameterized.class)
 public class HyphenRuleTest extends TokenizerRuleTest {
 
-	public HyphenRuleTest(Properties props, String constantName) {
+	public HyphenRuleTest(Properties props) {
 		super(props, IndexerConstants.HYPHENRULE);
 		// TODO Auto-generated constructor stub
 	}

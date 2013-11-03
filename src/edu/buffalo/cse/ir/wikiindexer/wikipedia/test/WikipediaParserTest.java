@@ -9,10 +9,7 @@ import org.junit.Test;
 
 import edu.buffalo.cse.ir.wikiindexer.wikipedia.WikipediaParser;
 
-/**
- * @author nikhillo
- *
- */
+
 public class WikipediaParserTest {
 
 	/**

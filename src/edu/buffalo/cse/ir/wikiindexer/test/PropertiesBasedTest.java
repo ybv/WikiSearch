@@ -14,12 +14,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import edu.buffalo.cse.ir.wikiindexer.FileUtil;
 
-/**
- * @author nikhillo
- * Common class to do all the parameterized loading
- * Any junit test class that needs a properties file MUST extend this class
- * Others can stay as are
- */
+
 @RunWith(Parameterized.class)
 public class PropertiesBasedTest {
 protected Properties idxProps;

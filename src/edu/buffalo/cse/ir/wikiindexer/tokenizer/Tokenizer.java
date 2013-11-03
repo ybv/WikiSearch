@@ -12,12 +12,7 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule.RULENAMES;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.RuleClass;
 
-/**
- * This is the main Tokenizer class. It simply calls one TokenizerRule after another
- * All operations can be assumed to be thread safe.
- * @author nikhillo
- * 
- */
+
 public class Tokenizer {
 	/* The set of all valid rule names, simply the RULENAMES enum as a set */
 	private static Set<RULENAMES> validRules;

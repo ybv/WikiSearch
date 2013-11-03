@@ -21,10 +21,7 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.RuleClass;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule;
 
-/**
- * @author nikhillo
- *
- */
+
 @RunWith(Parameterized.class)
 public class TokenizerRuleTest extends PropertiesBasedTest {
 	protected TokenizerRule rule;
@@ -95,8 +92,9 @@ public class TokenizerRuleTest extends PropertiesBasedTest {
 		if (input.length > 1) {
 			stream.append(Arrays.copyOfRange(input, 1, input.length));
 		}
+		
 		rule.apply(stream);
 		Collection<String> strtokens = stream.getAllTokens();
-		return (strtokens != null) ? strtokens.toArray() : null;
+		return (strtokens != null) ? strtokens.toArray() : new Object[]{};
 	}
 }

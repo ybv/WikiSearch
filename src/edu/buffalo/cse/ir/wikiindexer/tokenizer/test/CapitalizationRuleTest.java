@@ -14,14 +14,11 @@ import org.junit.runners.Parameterized;
 import edu.buffalo.cse.ir.wikiindexer.IndexerConstants;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 
-/**
- * @author nikhillo
- * 
- */
+
 @RunWith(Parameterized.class)
 public class CapitalizationRuleTest extends TokenizerRuleTest {
 
-	public CapitalizationRuleTest(Properties props, String constantName) {
+	public CapitalizationRuleTest(Properties props) {
 		super(props, IndexerConstants.CAPITALIZATIONRULE);
 	}
 

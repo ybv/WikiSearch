@@ -7,14 +7,8 @@ import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenizerException;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.rules.TokenizerRule.RULENAMES;
 
-/**
- * An implementation of the Porter stemmer for English
- * THis is from the author's website directly
- * Wrapped in the framework class
- * @author nikhillo
- *
- */
-//example of annotation, for classes you write annotate accordingly
+
+
 @RuleClass(className = RULENAMES.STEMMER)
 public class EnglishStemmer implements TokenizerRule {
 
@@ -28,7 +22,7 @@ public class EnglishStemmer implements TokenizerRule {
 			while (stream.hasNext()) { 
 				token = stream.next(); //read next token
 				if (token != null) {
-					token = token.toLowerCase();
+					//token = token.toLowerCase();
 					if (isLettersOnly(token)) {
 						s = new Stemmer();
 						for (char c: token.toCharArray()) {

@@ -19,10 +19,7 @@ import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import edu.buffalo.cse.ir.wikiindexer.indexer.LocalDictionary;
 import edu.buffalo.cse.ir.wikiindexer.test.PropertiesBasedTest;
 
-/**
- * @author nikhillo
- * 
- */
+
 @RunWith(Parameterized.class)
 public class LocalDictionaryTest extends PropertiesBasedTest {
 
@@ -49,15 +46,20 @@ public class LocalDictionaryTest extends PropertiesBasedTest {
 			assertEquals(retVal, dict.lookup("test"));
 
 			// test different values
-			//assertNotEquals(retVal, dict.lookup("tests"));
+			assertNotEquals(retVal, dict.lookup("tests"));
 
 			// test case sensitivity
-			//assertNotEquals(retVal, dict.lookup("Test"));
-			//assertNotEquals(retVal, dict.lookup("tEst"));
-			//assertNotEquals(retVal, dict.lookup("TEST"));
+			assertNotEquals(retVal, dict.lookup("Test"));
+			assertNotEquals(retVal, dict.lookup("tEst"));
+			assertNotEquals(retVal, dict.lookup("TEST"));
 			
 			dict = null;
 		}
+	}
+
+	private void assertNotEquals(int retVal, int lookup) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class LocalDictionaryTest extends PropertiesBasedTest {
 			assertNull(dict.query("doom"));
 			
 			//wildcard at start
-			assertArrayEquals(new Object[] {"best","crest","test","zest"}, getSortedArray(dict.query("*est")));
+			assertArrayEquals(new Object[] {"best","crest","tempest","test","zest"}, getSortedArray(dict.query("*est")));
 			
 			//wildcard at end
 			assertArrayEquals(new Object[] {"teat","temper","tempest","test","testy","tether"}, getSortedArray(dict.query("te*")));

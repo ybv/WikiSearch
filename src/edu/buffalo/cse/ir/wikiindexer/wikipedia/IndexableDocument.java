@@ -3,21 +3,23 @@
  */
 package edu.buffalo.cse.ir.wikiindexer.wikipedia;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.buffalo.cse.ir.wikiindexer.indexer.INDEXFIELD;
 import edu.buffalo.cse.ir.wikiindexer.tokenizer.TokenStream;
 
-/**
- * A simple map based token view of the transformed document
- * @author nikhillo
- *
- */
+
 public class IndexableDocument {
 	/**
 	 * Default constructor
 	 */
+	Map<INDEXFIELD, TokenStream> idftsmap ;
+	String docidtitle = "";
 	public IndexableDocument() {
-		//TODO: Init state as needed
+		this.idftsmap  = new HashMap<INDEXFIELD,TokenStream>();
 	}
+	
 	
 	/**
 	 * MEthod to add a field and stream to the map
@@ -26,7 +28,12 @@ public class IndexableDocument {
 	 * @param stream: The stream to be added.
 	 */
 	public void addField(INDEXFIELD field, TokenStream stream) {
-		//TODO: Implement this method
+		//System.out.println("INSIDE INDEXIBLE DOCUMENT ADD FIELD");
+		if(stream!=null && !field.toString().equals("")){
+			idftsmap.put(field, stream);
+			//System.out.println(field.toString());
+			//System.out.println(stream.getAllTokens());
+		}
 	}
 	
 	/**
@@ -36,7 +43,7 @@ public class IndexableDocument {
 	 */
 	public TokenStream getStream(INDEXFIELD key) {
 		//TODO: Implement this method
-		return null;
+		return idftsmap.get(key);
 	}
 	
 	/**
@@ -47,7 +54,11 @@ public class IndexableDocument {
 	 */
 	public String getDocumentIdentifier() {
 		//TODO: Implement this method
-		return null;
+		return this.docidtitle;
+	}
+	public void addTitle(String title) {
+		// TODO Auto-generated method stub
+		this.docidtitle=title;
 	}
 	
 }
